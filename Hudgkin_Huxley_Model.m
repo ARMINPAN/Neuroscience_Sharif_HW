@@ -1,5 +1,5 @@
 dt = 0.01; % Simulation time step
-Duration = 20; % Simulation length
+Duration = 200; % Simulation length
 T = ceil(Duration/dt);
 t = (1:T) * dt; % Simulation time points in ms
 Cm = 1; % Membrane capacitance in micro Farads
@@ -22,9 +22,9 @@ beta_m = 4*exp(u/18);
 alpha_h = .07 * exp(u/20);
 beta_h = 1 ./ (1+exp(3 + .1*u));
 %intial condintions
-n_initialCond = 0.1;
-m_initialCond = 0.0001;
-h_initialCond = 0.96;
+n_initialCond = 0.29;
+m_initialCond = 0.05;
+h_initialCond = 0.55;
 dv = 0;
 dn = 0;
 dm = 0;
@@ -33,11 +33,11 @@ n = n_initialCond * ones(1,T);
 m = m_initialCond * ones(1,T);
 h = h_initialCond * ones(1,T);
 %dv = dv_initialCond * ones(1,T);
-Iext = 100;
+%Iext = 0;
 
 
 for i = 1:(T-1)
-    dv = (gl*(El - v(i)) - gNa*(m(i)^3)*h(i)*(v(i) - ENa) - gK*(n(i)^4).*(v(i) - EK) + Iext)/Cm;
+    dv = (gl*(El - v(i)) - gNa*(m(i)^3)*h(i)*(v(i) - ENa) - gK*(n(i)^4).*(v(i) - EK) + I(i))/Cm;
     v(i+1) = v(i) + dv*dt;
     u = vr - v;
     n(i+1) = n(i) + dn*dt;
@@ -54,9 +54,10 @@ for i = 1:(T-1)
     dh = (-h(i+1) + alpha_h(i+1)/(alpha_h(i+1) + beta_h(i+1)))*(alpha_h(i+1) + beta_h(i+1));
 end
     
+plot(t,v); %Plot v-t
 
-subplot(2,1,1);
-plot(v,1./(alpha_n + beta_n),v,1./(alpha_m + beta_m),v,1./(alpha_h + beta_h));
-subplot(2,1,2);
-plot(v,alpha_n./(alpha_n + beta_n),v,alpha_m./(alpha_m + beta_m),v,alpha_h./(alpha_h + beta_h));
+%subplot(2,1,1); plot tau-v
+%plot(v,1./(alpha_n + beta_n),v,1./(alpha_m + beta_m),v,1./(alpha_h + beta_h));
+%subplot(2,1,2); plot probabilites_steadystates-v
+%plot(v,alpha_n./(alpha_n + beta_n),v,alpha_m./(alpha_m + beta_m),v,alpha_h./(alpha_h + beta_h));
 
