@@ -7,7 +7,6 @@ vr = 0; % in mv, resting potential
 tau_m = 20; %Arbitrary
 v = vr * ones(1,T); % Vector of output voltage
 vth = 0.015; % Threshold Voltage
-vrest = 0; % Rest voltage
 RI = 0.02; % A constant value in the diffrential equation of V
 
 dv = 0;
@@ -18,16 +17,21 @@ for i = 1:(T-1)
     if (v(i) < vth)
     dv = (-v(i) + RI) / tau_m;
     v(i+1) = v(i) + dv*dt;
+    flag = 0;
     % Rest
-    elseif (v(i) >= vth) && (flag == 0)
-        v(i) = 0;
-    % Refractory
-    elseif (v(i) <= 0)
-        
+    elseif (v(i) >= vth) 
+        if(flag == 1)
+            v(i) = 0;
+        else
+            dv = (-v(i) + 0.04)^(0.5);
+            v(i+1) = v(i) + dv*dt;
+            if(v(i) >= 0.025)
+                %0.055 is the highest voltage after the spiking
+                flag = 1;
+            end
+        end
     end
 end
     
             
-
-
 plot(t,v);
