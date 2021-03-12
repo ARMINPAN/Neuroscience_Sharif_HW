@@ -12,11 +12,13 @@ El = -49.4; % in mv, nernst potential for leak channel
 vr = -60; % in mv, resting potential
 v = vr * ones(1,T); % Vector of output voltage
 
-I = ones(1,100); % in uA, external stimulus (external current)
+I = 100*ones(1,T); % in uA, external stimulus (external current)
 
-%FireRate
-FR = zeros(1,100);
-I_Values = 2:2:200;
+% I = ones(1,100); % for part 10
+
+%FireRate for part 10
+% FR = zeros(1,100);
+% I_Values = 2:2:200;
 
 
 %chirp
@@ -85,23 +87,25 @@ h = h_initialCond * ones(1,T);
 
 %change I to see diffrenet behaviors of the nueron
 %Here we add another for loop, for part 1.10 to simulate the model for 100
-%diff currents, Vth = -30
-for j = 2:2:200
-    n(:) = n_initialCond;
-    m(:) = m_initialCond;
-    h(:) = h_initialCond;
-    flag = 1;
-    v(:) = vr; % Vector of output voltage
+%diff currents, Vth = -38
+
+% for j = 2:2:200 part 10
+%     n(:) = n_initialCond;
+%     m(:) = m_initialCond;
+%     h(:) = h_initialCond;
+%     flag = 1;
+%     v(:) = vr; % Vector of output voltage
     for i = 1:(T-1)
-        dv = (gl*(El - v(i)) - gNa*(m(i)^3)*h(i)*(v(i) - ENa) - gK*(n(i)^4).*(v(i) - EK) + j*I(j/2))/Cm;
-        v(i+1) = v(i) + dv*dt;
-        if(v(i) <= -38)
-            flag = 1;
-        end
-        if(v(i) >= -38 && flag == 1)
-            FR(j/2) = FR(j/2) + 1;
-            flag = 0;
-        end
+%         dv = (gl*(El - v(i)) - gNa*(m(i)^3)*h(i)*(v(i) - ENa) - gK*(n(i)^4).*(v(i) - EK) + j*I(j/2))/Cm;
+          dv = (gl*(El - v(i)) - gNa*(m(i)^3)*h(i)*(v(i) - ENa) - gK*(n(i)^4).*(v(i) - EK) + I(i))/Cm;
+          v(i+1) = v(i) + dv*dt;
+%         if(v(i) <= -38) part 10
+%             flag = 1;
+%         end
+%         if(v(i) >= -38 && flag == 1)
+%             FR(j/2) = FR(j/2) + 1;
+%             flag = 0;
+%         end
         u(i) = vr - v(i);
         alpha_n(i) = (.1 * u(i) + 1)./(exp(1 + .1 * u(i)) - 1) / 10;
         beta_n(i) = .125 * exp(u(i)/80);
@@ -116,14 +120,14 @@ for j = 2:2:200
         m(i+1) = m(i) + dm*dt;
         h(i+1) = h(i) + dh*dt;
     end
-end
+%end
 
 
-% I_FR
-plot(I_Values,FR);
-title('FireRates for diffrenet currents');
-xlabel('Current');
-ylabel('FireRates in 2000ms');
+% I_FR for part 10
+% plot(I_Values,FR);
+% title('FireRates for diffrenet currents');
+% xlabel('Current');
+% ylabel('FireRates in 2000ms');
 
 
 % %n/voltage
