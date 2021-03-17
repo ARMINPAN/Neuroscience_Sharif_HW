@@ -1,5 +1,5 @@
 dt = 0.01; % Simulation time step
-Duration = 2; % Simulation length
+Duration = 100; % Simulation length
 T = ceil(Duration/dt);
 t = (1:T) * dt; % Simulation time points in ms
 Cm = 1; % Membrane capacitance in micro Farads
@@ -131,10 +131,10 @@ h = h_initialCond * ones(1,T);
 
 
 % %n/voltage
-% plot(v,n); %Plot n-v
-% title('n versus v when I = 200μA');
-% xlabel('v');
-% ylabel('n');
+%  plot(v,n); %Plot n-v
+%  title('n versus v when I = 200μA');
+%  xlabel('v');
+%  ylabel('n');
 
 % voltage/t
 % subplot(2,1,1);     
