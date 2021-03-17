@@ -69,7 +69,7 @@ vector = zeros(1,T);
 probabilities = poisspdf(1:T,lambda);
 
 for i=1:T
-    vector(i) = binornd(1,probabilities(i));
+    vector(i) = 100*binornd(1,probabilities(i));
 end
 plot(vector);
 xlabel('Element index');

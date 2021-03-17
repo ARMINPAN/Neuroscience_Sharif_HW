@@ -1,5 +1,5 @@
 dt = 0.01; % Simulation time step
-Duration = 2000; % Simulation length
+Duration = 2; % Simulation length
 T = ceil(Duration/dt);
 t = (1:T) * dt; % Simulation time points in ms
 Cm = 1; % Membrane capacitance in micro Farads
