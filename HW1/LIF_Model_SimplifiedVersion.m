@@ -10,22 +10,22 @@ vr = 0; % in mv, resting potential
 tau_m = 20; %Arbitrary
 v = vr * ones(1,T); % Vector of output voltage
 vth = 0.015; % Threshold Voltage
-% RI = 0.02; % A constant value in the diffrential equation of V
-R = 0.001;
-I = ones(1,250); % in uA, external stimulus (external current)
+RI = 0.02; % A constant value in the diffrential equation of V
+%R = 0.001; part3
+%I = ones(1,T); % in uA, external stimulus (external current)
 dv = 0;
 flag = 0;
 FR = zeros(1,250);
 I_Values = 2:2:500;
 
-for j = 2:2:500  %part 3
-     flag2 = 1;
-     v(:) = vr; % Vector of output voltage
-    for i = 1:(T-1)
+%for j = 2:2:500  %part 3
+%     flag2 = 1; %part 3
+%    v(:) = vr; % Vector of output voltage %part 3
+     for i = 1:(T-1)
         % Spike
         if (v(i) < vth)
-        dv = (-v(i) + R*j*I(j/2)) / tau_m; % part 3
-        % dv = (-v(i) + RI) / tau_m;
+ %      dv = (-v(i) + R*j*I(j/2)) / tau_m; % part 3
+        dv = (-v(i) + RI) / tau_m;
         v(i+1) = v(i) + dv*dt;
         flag = 0;
         % Rest
@@ -38,15 +38,15 @@ for j = 2:2:500  %part 3
                 if(v(i) >= 0.025)
                     %0.026 is the highest voltage when spiking
                     flag = 1;
-                    FR(j/2) = FR(j/2) + 1;
+                    %FR(j/2) = FR(j/2) + 1;
                 end
             end
         end
     end
-end
+%end
 
 % part_1    
-% plot(t,v);
+ plot(t,v);
 % title('Voltage/Time');
 % xlabel('Time');
 % ylabel('Voltage');

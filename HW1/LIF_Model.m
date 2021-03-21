@@ -62,7 +62,7 @@ xlabel('Time');
 ylabel('Voltage');
 subplot(2,1,2);
 %plot(I_total); %for inhibitory and excitatory
-plot(I);
+plot(I); %deactive this for inhibitory and excitatory
 xlabel('Element index');
 ylabel('Current');
 
