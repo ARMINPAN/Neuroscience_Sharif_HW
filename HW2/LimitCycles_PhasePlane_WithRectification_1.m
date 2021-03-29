@@ -2,9 +2,9 @@ clc
 clear
 figure
 % initial parameters
-noip = 10;
+noip = 15;
 interval = 60;
-Mee = 1.25;
+Mee = 1;
 Mei = -1;
 Mie = 1;
 Mii = 0;
@@ -12,7 +12,8 @@ Ye = -10;
 Yi = 10;
 Te = 0.01;
 Ti = 0.05;
-f = @(t,Y) [(-Y(1)+Mee*Y(1)+Mei*Y(2)-Ye)/Te;(-Y(2)+Mie*Y(1)+Mii*Y(2)-Yi)/Ti];
+% rectification applied to f
+f = @(t,Y) [(-Y(1)+((Mee*Y(1)+Mei*Y(2)-Ye)+abs(Mee*Y(1)+Mei*Y(2)-Ye))/2)/Te;(-Y(2)+((Mie*Y(1)+Mii*Y(2)-Yi)+abs(Mie*Y(1)+Mii*Y(2)-Yi))/2)/Ti];
 y1 = linspace(-interval,interval,20);
 y2 = linspace(-interval,interval,20);
 % creates two matrices one for all the x-values on the grid, and one for
@@ -35,8 +36,8 @@ ylabel('V_I')
 % axis tight equal;
 hold on
 for i = 1:noip
-[ts,ys] = ode45(f,[0,50],[rand()*interval*((-1)^floor(rand()*interval)); ...
-rand()*interval*((-1)^floor(rand()*interval))]);
+[ts,ys] = ode45(f,[0,50],[rand()*interval; ...
+rand()*interval]);
 plot(ys(:,1),ys(:,2),'b')
 plot(ys(1,1),ys(1,2),'bo') % starting point
 plot(ys(end,1),ys(end,2),'ks') % ending point
