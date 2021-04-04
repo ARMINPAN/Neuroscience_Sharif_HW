@@ -4,7 +4,7 @@ figure
 % initial parameters
 noip = 15;
 interval = 10;
-I = ;
+I = 0;
 f = @(t,Y) [Y(1)-Y(1)^3-Y(2)+I;0.08*(Y(1)+0.7-0.8*Y(2))];
 y1 = linspace(-interval,interval,20);
 y2 = linspace(-interval,interval,20);

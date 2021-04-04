@@ -39,20 +39,20 @@ end
 % plot v
 plot(t,v);
 grid on;
-title('v/t plot');
+title('v/t plot','interpreter','latex');
 xlabel('t');
 ylabel('v');
 % plot gE
 figure
 plot(t,gE);
 grid on;
-title('gE/t plot');
+title('gE/t plot','interpreter','latex');
 xlabel('t');
 ylabel('gE');
 % plot gI
 figure
 plot(t,gI);
 grid on;
-title('gI/t plot');
+title('gI/t plot','interpreter','latex');
 xlabel('t');
 ylabel('gI');
