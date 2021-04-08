@@ -4,7 +4,7 @@ figure
 % initial parameters
 noip = 15;
 interval = 10;
-I = 0;
+I = 0.3;
 f = @(t,Y) [Y(1)-Y(1)^3-Y(2)+I;0.08*(Y(1)+0.7-0.8*Y(2))];
 y1 = linspace(-interval,interval,20);
 y2 = linspace(-interval,interval,20);
@@ -18,9 +18,9 @@ v = zeros(size(x));
 % each point (y1, y2)
 t=0; % we want the derivatives at each point at t=0, i.e. the starting time
 for i = 1:numel(x)
-Yprime = f(t,[x(i); y(i)]);
-u(i) = Yprime(1);
-v(i) = Yprime(2);
+    Yprime = f(t,[x(i); y(i)]);
+    u(i) = Yprime(1);
+    v(i) = Yprime(2);
 end
 quiver(x,y,u,v,'r');
 xlabel('V')
@@ -28,13 +28,13 @@ ylabel('W')
 % axis tight equal;
 hold on
 for i = 1:noip
-[ts,ys] = ode45(f,[0,50],[rand()*interval*((-1)^floor(rand()*interval)); ...
-rand()*interval*((-1)^floor(rand()*interval))]);
-plot(ys(:,1),ys(:,2),'b')
-plot(ys(1,1),ys(1,2),'bo') % starting point
-plot(ys(end,1),ys(end,2),'ks') % ending point
-xlim([-interval interval]);
-ylim([-interval interval]);
+    [ts,ys] = ode45(f,[0,50],[rand()*interval*((-1)^floor(rand()*interval)); ...
+    rand()*interval*((-1)^floor(rand()*interval))]);
+    plot(ys(:,1),ys(:,2),'b')
+    plot(ys(1,1),ys(1,2),'bo') % starting point
+    plot(ys(end,1),ys(end,2),'ks') % ending point
+    xlim([-interval interval]);
+    ylim([-interval interval]);
 end
 syms t
 f1 = fplot((I+t-t^3),'m','LineWidth',2);

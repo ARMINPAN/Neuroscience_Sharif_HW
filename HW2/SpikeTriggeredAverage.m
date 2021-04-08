@@ -9,7 +9,8 @@ load('Q3_data.mat');
 
 % plot stim over 1s which is 2000 samples - Q.3.1
 figure;
-plot(Stim(1:2000));
+plot((1:2000)/2000,Stim(1:2000));
+xlabel('time')
 grid on;
 title('Stim','interpreter','latex');
 
@@ -27,7 +28,9 @@ for i=1:20
     subplot(4,5,i);
     grid on;
     sSpikeT = (Spike_times(SelectedSpikes(i)));
-    plot(Stim(2000*sSpikeT - 150 : 2000*sSpikeT));
+    plot((0:150)/2000,Stim(2000*sSpikeT - 150 : 2000*sSpikeT));
+    xlim([0 0.075]);
+    xlabel('time','FontWeight','bold');
     title(SelectedSpikes(i));
 end
 
@@ -42,8 +45,9 @@ for i=1:length(Samples)
     StimVal(i,:) = Stim(cast(Samples(i),'int64')-150:cast(Samples(i),'int64'));
 end
 
-plot(mean(StimVal,1));
+plot((0:150)/2000,mean(StimVal,1));
 grid on;
+xlabel('time(ms)');
 title('Spike-Triggered Average','interpreter','latex');
 
 % Q.3.4
@@ -54,7 +58,8 @@ for i=1:20
 	hold on;
     grid on;
     sSpikeT = (Spike_times(SelectedSpikes(i)));
-    plot(Stim(2000*sSpikeT - 150 : 2000*sSpikeT),'LineWidth',0.1,'color','#3399FF');
+    plot((0:150)/2000,Stim(2000*sSpikeT - 150 : 2000*sSpikeT),'LineWidth',0.1,'color','#3399FF');
 end
-    plot([0:150],mean(StimVal,1),'LineWidth',4,'color','#404040');
+    plot((0:150)/2000,mean(StimVal,1),'LineWidth',4,'color','#404040');
+    xlabel('time(ms)');
     title('Spike-Triggered Average','interpreter','latex');

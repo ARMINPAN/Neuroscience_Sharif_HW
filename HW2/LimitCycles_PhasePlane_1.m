@@ -35,13 +35,13 @@ ylabel('V_I')
 % axis tight equal;
 hold on
 for i = 1:noip
-[ts,ys] = ode45(f,[0,50],[rand()*interval*((-1)^floor(rand()*interval)); ...
-rand()*interval*((-1)^floor(rand()*interval))]);
-plot(ys(:,1),ys(:,2),'b')
-plot(ys(1,1),ys(1,2),'bo') % starting point
-plot(ys(end,1),ys(end,2),'ks') % ending point
-xlim([-interval interval]);
-ylim([-interval interval]);
+    [ts,ys] = ode45(f,[0,50],[rand()*interval*((-1)^floor(rand()*interval)); ...
+    rand()*interval*((-1)^floor(rand()*interval))]);
+    plot(ys(:,1),ys(:,2),'b')
+    plot(ys(1,1),ys(1,2),'bo') % starting point
+    plot(ys(end,1),ys(end,2),'ks') % ending point
+    xlim([-interval interval]);
+    ylim([-interval interval]);
 end
 syms t
 fplot((t+Ye-Mee*t)/Mei,'m','LineWidth',2);
