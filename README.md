@@ -14,3 +14,9 @@ Neuroscience of Learning, Memory, Cognition
 * 4 - Raster Plot and PETH\PSTH
 * 5 - Dynamic of SR Latch system
 * 6 - Limit Cycle
+
+**HW3:**
+* 1 - EEG signal Pre-Processing and Processing
+    - A 40 Hz auditory visual task
+* 2 - Detecting apnea using EEG singal
+    - Implemention based on this [article](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6595536/#C13).
