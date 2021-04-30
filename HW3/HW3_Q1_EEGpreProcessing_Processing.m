@@ -1,7 +1,7 @@
 % Homework 3
 % EEG pre processing and processing
 %% 1 - Pre processing
-
+figure;
 % 1.1 - frequency spectrum of FZ channel
 Fs = 500;
 X = ALLEEG(5).data(5,:);
@@ -12,7 +12,8 @@ P1 = P2(1:L/2+1);
 P1(2:end-1) = 2*P1(2:end-1);
 f = Fs*(0:(L/2))/L;
 plot(f,P1)
-
+title(' Frequency Spectrum of Fz Channel');
+figure;
 
 % 1.2 - epoch
 % for epoching we need to find 2s in the 20th column in the
@@ -50,7 +51,7 @@ save('a_epoch.mat','audio_epoched');
 % calculate power spectrum of each trial in each channel and put them in a
 % 3d matrix for av_task
 av_epoch = zeros(60,length(pspectrum(audio_visual_epoched(1,:,1))),19);
-noisy_trials = [];
+noisy_trials_av_task = [];
 for i=1:19
     for k=1:60
         av_epoch(k,:,i) = (pspectrum(audio_visual_epoched(i,:,k))).';
@@ -58,16 +59,16 @@ for i=1:19
 end
 for i=1:19
     vr = sum(nanstd(av_epoch(:,:,i),[ ],2).^2,2);
-    noisy_trials = union((find(abs(zscore(vr)) > 3.5)),noisy_trials);
+    noisy_trials_av_task = union((find(abs(zscore(vr)) > 3.5)),noisy_trials_av_task);
 end
 
 % now remove these trials from av_epoch
-audio_visual_epoched(:,:,(noisy_trials).') = [];
+audio_visual_epoched(:,:,(noisy_trials_av_task).') = [];
 
 
 %%%%%%%%%%%%%%%%%%%%%%%% remove noisy trails of v_task
 v_epoch = zeros(60,length(pspectrum(visual_epoched(1,:,1))),19);
-noisy_trials = [];
+noisy_trials_v_task = [];
 for i=1:19
     for k=1:60
         v_epoch(k,:,i) = (pspectrum(visual_epoched(i,:,k))).';
@@ -75,15 +76,15 @@ for i=1:19
 end
 for i=1:19
     vr = sum(nanstd(v_epoch(:,:,i),[ ],2).^2,2);
-    noisy_trials = union((find(abs(zscore(vr)) > 3.5)),noisy_trials);
+    noisy_trials_v_task = union((find(abs(zscore(vr)) > 3.5)),noisy_trials_v_task);
 end
 % now remove these trials from v_epoch
-visual_epoched(:,:,(noisy_trials).') = [];
+visual_epoched(:,:,(noisy_trials_v_task).') = [];
 
 
 %%%%%%%%%%%%%%%%%%%%%%%% remove noisy trails of a_task
 a_epoch = zeros(60,length(pspectrum(audio_epoched(1,:,1))),19);
-noisy_trials = [];
+noisy_trials_a_task = [];
 for i=1:19
     for k=1:60
         a_epoch(k,:,i) = (pspectrum(audio_epoched(i,:,k))).';
@@ -91,11 +92,11 @@ for i=1:19
 end
 for i=1:19
     vr = sum(nanstd(a_epoch(:,:,i),[ ],2).^2,2);
-    noisy_trials = union((find(abs(zscore(vr)) > 3.5)),noisy_trials);
+    noisy_trials_a_task = union((find(abs(zscore(vr)) > 3.5)),noisy_trials_a_task);
 end
 
 % now remove these trials from v_epoch
-audio_epoched(:,:,(noisy_trials).') = [];
+audio_epoched(:,:,(noisy_trials_a_task).') = [];
 % save the new data
 save('av_epoch_noisyTrialsRmv.mat','audio_visual_epoched');
 save('v_epoch_noisyTrialsRmv.mat','visual_epoched');
@@ -134,34 +135,35 @@ vTask_rest_sum = sum(vTask_rest,[3]);
 aTask_rest_sum = sum(aTask_rest,[3]);
 
 % mean of stimulations
-avTask_stimuli_mean = avTask_stimuli_sum/60;
-vTask_stimuli_mean = vTask_stimuli_sum/60;
-aTask_stimuli_mean = aTask_stimuli_sum/60;
+avTask_stimuli_mean = avTask_stimuli_sum./60;
+vTask_stimuli_mean = vTask_stimuli_sum./60;
+aTask_stimuli_mean = aTask_stimuli_sum./60;
 
 % mean of rests
-avTask_rest_mean = avTask_rest_sum/60;
-vTask_rest_mean = vTask_rest_sum/60;
-aTask_rest_mean = aTask_rest_sum/60;
+avTask_rest_mean = avTask_rest_sum./60;
+vTask_rest_mean = vTask_rest_sum./60;
+aTask_rest_mean = aTask_rest_sum./60;
 
 
 % frequency spectrum of FZ channel of auditory task
 Fs = 500;
-X = aTask_stimuli_mean(5,:);
+X = vTask_stimuli_mean(19,:);
 L = length(X);
 Y = fft(X);
 P2 = abs(Y/L);
 P1 = P2(1:L/2+1);
 P1(2:end-1) = 2*P1(2:end-1);
 f = Fs*(0:(L/2))/L;
-plot(f,P1)
+p1 = plot(f,P1);
+title('FFT of mean of all trials over O2 channel during visual task');
 
 hold on;
-Fs = 500;
-X = aTask_rest_mean(5,:);
+X = vTask_rest_mean(19,:);
 L = length(X);
 Y = fft(X);
 P2 = abs(Y/L);
 P1 = P2(1:L/2+1);
 P1(2:end-1) = 2*P1(2:end-1);
 f = Fs*(0:(L/2))/L;
-plot(f,P1)
+p2 = plot(f,P1);
+legend('task','rest');

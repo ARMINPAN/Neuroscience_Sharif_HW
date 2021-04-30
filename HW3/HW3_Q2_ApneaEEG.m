@@ -90,3 +90,7 @@ plotbox = [Rdt_Normal Rdt_Apnea Rda_Normal Rda_Apnea Rds_Normal Rds_Apnea ...
 Rdb_Normal Rdb_Apnea Rta_Normal Rta_Apnea];
 
 boxplot((reshape(plotbox,[10 20])).')
+title('variation of five energy ratio values for apnea and non-apnea events');
+xticklabels({'A','N','A','N','A','N','A','N','A','N'})
+xlabel('Features');
+ylabel('Energy ratio values');
