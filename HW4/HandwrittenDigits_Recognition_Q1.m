@@ -3,6 +3,7 @@
 % network
 
 clc; clear;
+% part 1
 % load data
 load('hand_digit_data.mat');
 
@@ -21,3 +22,19 @@ end
 figure;
 montage(output_pic_array,'Size',[10 10]);
 title('100 random numbers','interpreter','latex');
+
+
+% part 2
+% take out train and test data
+test = [;];
+train = [;];
+y_train = [];
+y_test = [];
+
+for i=1:10
+    train = [train; X(((i-1)*500+1):((i-1)*500+300),:)];
+    test = [test; X(((i-1)*500+301):(i*500),:)];
+    y_train = [y_train; y(((i-1)*500+1):((i-1)*500+300))];
+    y_test = [y_test; y(((i-1)*500+301):(i*500))];
+end
+
