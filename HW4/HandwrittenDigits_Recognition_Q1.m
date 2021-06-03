@@ -38,3 +38,20 @@ for i=1:10
     y_test = [y_test; y(((i-1)*500+301):(i*500))];
 end
 
+
+% part 3
+% make structure of the neural network
+W12 = (rand(25,401)).*2*0.12 - 0.12; % first layer weights
+W23 = (rand(10,26)).*2*0.12 - 0.12; % second layer weights
+
+
+% part 4
+% cost function alogrithm
+
+ 
+
+
+
+
+
+
