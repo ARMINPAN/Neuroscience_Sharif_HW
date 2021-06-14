@@ -44,13 +44,9 @@ end
 W12 = (rand(25,401)).*2*0.12 - 0.12; % first layer weights
 W23 = (rand(10,26)).*2*0.12 - 0.12; % second layer weights
 
-a1 = [ones(3000,1) train]; % input of first layer
-a2 = sigmoid_calculator(a1*((W12).')); % second layer neurons
-a2 = [ones(3000,1) a2]; % add additional neurons
-a3 = sigmoid_calculator(a2*((W23).')); % third layer neurons
 
-% part 4
-% cost function alogrithm
+
+
 % create expected output
 expected_output = zeros(3000,10);
 for i=1:3000
@@ -75,43 +71,113 @@ for i=1:3000
     elseif y_train(i) == 1
         expected_output(i,1) = 1;
     end
-    
 end
 
 % cost function
-J = cost_function(expected_output,a3,W12,W23);
+lambda = 1;
+initial_nn_params = [W12(:) ; W23(:)];
+costFunction = @(p) nnCostFunction(p,400,25,10,train,expected_output,lambda);
 
-  
+options = optimset('MaxIter', 50);
+[nn_params, costt] = fmincg(costFunction, initial_nn_params, options);
 
+
+% reshaping weigths
+W12 = reshape(nn_params(1:25 * (400 + 1)), ...
+[25 (400 + 1)]);
+W23 = reshape(nn_params((1 + (25 * (400 + 1))):end), ...
+[10 (25 + 1)]);
+
+% now test the network with the test data
+f1 = [ones(2000,1) test]; % input of first layer
+f2 = sigmoid_calculator(f1*((W12).')); % second layer neurons
+f2 = [ones(2000,1) f2]; % add additional neurons
+f3 = sigmoid_calculator(f2*((W23).')); % third layer neurons
+
+outputDigits = predict(f3);
+
+% print the result
+visualize(outputDigits,test);
+accuracy = accuracyCalculator(y_test,outputDigits)
 
 % functions
-function J = cost_function(expected_output,a3,W12,W23)
-J = 0;
-landa = 1; % regularization parameter
-for m=1:3000
-    for k=1:10
-J = J +(1/3000)*(((-expected_output(m,k)*log(a3(m,k)))-...
-    ((1-expected_output(m,k))*(1-log(a3(m,k))))));
+function cost = cost_function(expected_output,a3,W12,W23)
+    cost = 0;
+    lambda = 1; % regularization parameter
+    for m=1:3000
+        for k=1:10
+        cost = cost +(1/3000)*(((-expected_output(m,k)*log10(a3(m,k)))-...
+            ((1-expected_output(m,k))*(log10(1-a3(m,k))))));
+        end
     end
-end
-for j=1:25
-    for k=2:401
-        J = J + (landa/(2*3000))*(W12(j,k))^2;
+    for j=1:25
+        for k=2:401
+            cost = cost + (lambda/(2*m))*((W12(j,k))^2);
+        end
     end
-end
-for j=1:10
-    for k=2:26
-        J = J + (landa/(2*3000))*(W23(j,k))^2;
+    for j=1:10
+        for k=2:26
+            cost = cost + (lambda/(2*m))*((W23(j,k))^2);
+        end
     end
-end
-
 end
 
 function output = sigmoid_calculator(input)
-output = 1./(1+exp(-input));
+    output = 1./(1+exp(-input));
 end
 
-function output = simgoid_derivative_calculator(input)
-output = exp(-input)./((1+exp(-input)).^2);
+function output = sigmoid_derivative_calculator(input)
+    output = exp(-input)./((1+exp(-input)).^2);
 end
 
+function [J,grad] = nnCostFunction(initial_nn_params, ...
+input_layer_size, ...
+hidden_layer_size, ...
+num_labels, ...
+X, y, lambda)
+    W12 = reshape(initial_nn_params(1:(25*(input_layer_size+1))),[hidden_layer_size (input_layer_size+1)]);
+    W23 = reshape(initial_nn_params(((25*(input_layer_size+1))+1:end)),[10 (hidden_layer_size+1)]);
+    a1 = [ones(3000,1) X]; % input of first layer
+    a2 = sigmoid_calculator(a1*((W12).')); % second layer neurons
+    a2 = [ones(3000,1) a2]; % add additional neurons
+    a3 = sigmoid_calculator(a2*((W23).')); % third layer neurons
+    lambda = 1;
+    delta3S = a3 - y;
+    z2 = a1*((W12).');
+    delta2S = (((W23(:,2:26).') * (delta3S.')).').*((sigmoid_derivative_calculator(z2)));
+    delta1B = delta2S.'*a1;
+    delta2B = delta3S.'*a2;
+    Jderivative1 = (1/3000)*(delta1B + lambda.*W12);
+    Jderivative2 = (1/3000)*(delta2B + lambda.*W23);
+    Jderivative1(:,1) = Jderivative1(:,1) - (lambda/3000).*(W12(:,1));
+    Jderivative2(:,1) = Jderivative2(:,1) - (lambda/3000).*(W23(:,1));
+    grad = [Jderivative1(:); Jderivative2(:)];
+
+    J = cost_function(y,a3,W12,W23); 
+end
+
+function digit = predict(f3)
+   [NeuronV,digit] = max(f3,[],2);
+end
+
+function visualize(outputDigits,test)
+    % choose 36 random numbers to show the result
+    selected_numbers = randperm(length(test),36);
+    figure;
+    title('36 random digits','interpreter','latex');
+    for i=1:36
+        subplot(6,6,i);
+        imshow(reshape(test(selected_numbers(i),:),[20 20]));
+        if(outputDigits(selected_numbers(i)) == 10)
+            xlabel(['detected: ', num2str(0)]);
+        else
+            xlabel(['detected: ', num2str(outputDigits(selected_numbers(i)))]);
+        end
+    end
+end
+
+
+function accuracy = accuracyCalculator(y_test,outputDigits)
+    X = find((y_test - outputDigits)>0)
+    accuracy = (length(y_test)-length(X))/length(y_test)*100
+end
