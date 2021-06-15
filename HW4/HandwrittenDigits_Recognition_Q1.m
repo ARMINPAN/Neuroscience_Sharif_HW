@@ -10,6 +10,8 @@ load('hand_digit_data.mat');
 % select 100 random numbers from the data for printing
 rng(1);
 selected_numbers = randperm(length(X),100);
+rng('default');
+
 
 
 % initialize the outputPic
@@ -41,6 +43,9 @@ end
 
 % part 3
 % make structure of the neural network
+input_layer_size = 400;
+hidden_layer_size = 25;
+output_layer_size = 10;
 W12 = (rand(25,401)).*2*0.12 - 0.12; % first layer weights
 W23 = (rand(10,26)).*2*0.12 - 0.12; % second layer weights
 
@@ -76,7 +81,7 @@ end
 % cost function
 lambda = 1;
 initial_nn_params = [W12(:) ; W23(:)];
-costFunction = @(p) nnCostFunction(p,400,25,10,train,expected_output,lambda);
+costFunction = @(p) nnCostFunction(p,input_layer_size,hidden_layer_size,output_layer_size,train,expected_output,lambda);
 
 options = optimset('MaxIter', 50);
 [nn_params, costt] = fmincg(costFunction, initial_nn_params, options);
@@ -98,7 +103,20 @@ outputDigits = predict(f3);
 
 % print the result
 visualize(outputDigits,test);
+selected_numbers = randperm(length(X),100);
 accuracy = accuracyCalculator(y_test,outputDigits)
+
+% print the hidden layer results
+% initialize the outputPic
+hiddenlayer = {};
+
+for i=1:25
+        hiddenlayer{end+1} = mat2gray(reshape(W12(i,2:401),[20 20]));
+end
+
+figure;
+montage(hiddenlayer,'Size',[5 5]);
+title('hidden layer','interpreter','latex');
 
 % functions
 function cost = cost_function(expected_output,a3,W12,W23)
@@ -130,13 +148,13 @@ function output = sigmoid_derivative_calculator(input)
     output = exp(-input)./((1+exp(-input)).^2);
 end
 
-function [J,grad] = nnCostFunction(initial_nn_params, ...
+function [J,grad] = nnCostFunction(nn_params, ...
 input_layer_size, ...
 hidden_layer_size, ...
 num_labels, ...
 X, y, lambda)
-    W12 = reshape(initial_nn_params(1:(25*(input_layer_size+1))),[hidden_layer_size (input_layer_size+1)]);
-    W23 = reshape(initial_nn_params(((25*(input_layer_size+1))+1:end)),[10 (hidden_layer_size+1)]);
+    W12 = reshape(nn_params(1:(25*(input_layer_size+1))),[hidden_layer_size (input_layer_size+1)]);
+    W23 = reshape(nn_params(((25*(input_layer_size+1))+1:end)),[10 (hidden_layer_size+1)]);
     a1 = [ones(3000,1) X]; % input of first layer
     a2 = sigmoid_calculator(a1*((W12).')); % second layer neurons
     a2 = [ones(3000,1) a2]; % add additional neurons
@@ -152,7 +170,6 @@ X, y, lambda)
     Jderivative1(:,1) = Jderivative1(:,1) - (lambda/3000).*(W12(:,1));
     Jderivative2(:,1) = Jderivative2(:,1) - (lambda/3000).*(W23(:,1));
     grad = [Jderivative1(:); Jderivative2(:)];
-
     J = cost_function(y,a3,W12,W23); 
 end
 
@@ -178,6 +195,6 @@ end
 
 
 function accuracy = accuracyCalculator(y_test,outputDigits)
-    X = find((y_test - outputDigits)>0)
-    accuracy = (length(y_test)-length(X))/length(y_test)*100
+    X = find((y_test - outputDigits)>0);
+    accuracy = (length(y_test)-length(X))/length(y_test)*100;
 end
