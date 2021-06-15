@@ -20,3 +20,10 @@ Neuroscience of Learning, Memory, Cognition
     - A 40 Hz auditory visual task
 * 2 - Detecting apnea using EEG singal
     - Implementation based on this [article](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6595536/#C13).
+
+**HW4:**
+* 1 - Hand Written Digits Recognition
+    - digit recognition using a three layer neural network
+* 2 - PCA Algorithm
+    - PCA on a set of points
+    - Eigenfaces and Eiganvalues
